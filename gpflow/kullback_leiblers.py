@@ -34,6 +34,12 @@ def _(inducing_variable, kernel, q_mu, q_sqrt, whiten=False):
         K = Kuu(inducing_variable, kernel, jitter=default_jitter())  # [P, M, M] or [M, M]
         return gauss_kl(q_mu, q_sqrt, K)
 
+@prior_kl_x.register(InducingVariables, Kernel, object, object)
+def _(inducing_variable, X_mean, X_cov, q_mu, q_sqrt, whiten=False):
+    # Nacho: Here we need to marginalize out all the X that are not the inducing points, to compute Kss
+    K = Kss(inducing_variable, X_cov)  # [P, M, M] or [M, M]
+    return gauss_kl(q_mu, q_sqrt, K)
+
 
 def gauss_kl(q_mu, q_sqrt, K=None, *, K_cholesky=None):
     """
