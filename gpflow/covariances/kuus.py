@@ -27,6 +27,28 @@ def Kuu_kernel_inducingpoints(inducing_variable: InducingPoints, kernel: Kernel,
     return Kzz
 
 
+def Kss(inducing_variable, CovX):
+    """ 
+    :param inducing_variable: inducing_variable: list of indices into the columns of X.
+    :param CovX: full covariance of prior p(X)
+    """
+    p = np.size(inducing_variable.Z, 0) # Dim of latent variables P
+    Xs = np.array(inducing_variable, dtype=int)
+
+    # TODO: try to get rid of nested for loops
+    cnt = 0
+    for i in Xs:
+        # Diagonal terms
+        Kzz[cnt*p:cnt*p+p, cnt*p:cnt*p+p] = CovX[i*p:i*p + p, i*p:i*p+p]
+        # Off-diagonal terms 
+        cnt_j = cnt+1
+        for j in Xs[cnt_j:]:
+            Kzz[cnt*p:cnt*p+p, cnt_j*p:cnt_j*p+p] = CovX[i*p:i*p + p, j*p:j*p+p]
+            cnt_j += 1
+        cnt += 1
+
+    return Kzz
+
 @Kuu.register(Multiscale, SquaredExponential)
 def Kuu_sqexp_multiscale(inducing_variable: Multiscale, kernel: SquaredExponential, *, jitter=0.0):
     Zmu, Zlen = kernel.slice(inducing_variable.Z, inducing_variable.scales)
