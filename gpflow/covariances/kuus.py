@@ -32,18 +32,19 @@ def Kss(inducing_variable, CovX):
     :param inducing_variable: inducing_variable: list of indices into the columns of X.
     :param CovX: full covariance of prior p(X)
     """
-    p = np.size(inducing_variable.Z, 0) # Dim of latent variables P
+    d = np.size(inducing_variable.Z, 0) # Dim of latent variables P
     Xs = np.array(inducing_variable, dtype=int)
 
     # TODO: try to get rid of nested for loops
     cnt = 0
     for i in Xs:
         # Diagonal terms
-        Kzz[cnt*p:cnt*p+p, cnt*p:cnt*p+p] = CovX[i*p:i*p + p, i*p:i*p+p]
+        Kzz[cnt*d:cnt*d+d, cnt*d:cnt*d+d] = CovX[i*d:i*d + d, i*d:i*d+d]
         # Off-diagonal terms 
         cnt_j = cnt+1
         for j in Xs[cnt_j:]:
-            Kzz[cnt*p:cnt*p+p, cnt_j*p:cnt_j*p+p] = CovX[i*p:i*p + p, j*p:j*p+p]
+            Kzz[cnt*d:cnt*d+d, cnt_j*d:cnt_j*d+d] = CovX[i*d:i*d + d, j*d:j*d+d]
+            Kzz[cnt_j*d:cnt_j*d+d, cnt*d:cnt*d+d] = CovX[i*d:i*d + d, j*d:j*d+d].T
             cnt_j += 1
         cnt += 1
 
