@@ -34,6 +34,9 @@ def Kss(inducing_variable, CovX):
     """
     d = np.size(inducing_variable.Z, 0) # Dim of latent variables P
     Xs = np.array(inducing_variable, dtype=int)
+    
+    # Allocate output
+    Kzz = np.zeros((len(Xs)*d, len(Xs)*d))
 
     # TODO: try to get rid of nested for loops
     cnt = 0
