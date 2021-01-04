@@ -27,31 +27,31 @@ def Kuu_kernel_inducingpoints(inducing_variable: InducingPoints, kernel: Kernel,
     return Kzz
 
 
-def Kss(inducing_variable, CovX):
-    """ 
-    :param inducing_variable: inducing_variable: list of indices into the columns of X.
-    :param CovX: full covariance of prior p(X)
-    """
-    d = np.size(inducing_variable.Z, 0) # Dim of latent variables P
-    Xs = np.array(inducing_variable, dtype=int)
-    
-    # Allocate output
-    Kzz = np.zeros((len(Xs)*d, len(Xs)*d))
-
-    # TODO: try to get rid of nested for loops
-    cnt = 0
-    for i in Xs:
-        # Diagonal terms
-        Kzz[cnt*d:cnt*d+d, cnt*d:cnt*d+d] = CovX[i*d:i*d + d, i*d:i*d+d]
-        # Off-diagonal terms 
-        cnt_j = cnt+1
-        for j in Xs[cnt_j:]:
-            Kzz[cnt*d:cnt*d+d, cnt_j*d:cnt_j*d+d] = CovX[i*d:i*d + d, j*d:j*d+d]
-            Kzz[cnt_j*d:cnt_j*d+d, cnt*d:cnt*d+d] = CovX[i*d:i*d + d, j*d:j*d+d].T
-            cnt_j += 1
-        cnt += 1
-
-    return Kzz
+#  def Kss(inducing_variable, CovX):
+    #  """
+    #  :param inducing_variable: inducing_variable: list of indices into the columns of X.
+    #  :param CovX: full covariance of prior p(X)
+    #  """
+    #  d = np.size(inducing_variable.Z, 0) # Dim of latent variables P
+    #  Xs = np.array(inducing_variable, dtype=int)
+    #
+    #  # Allocate output
+    #  Kzz = np.zeros((len(Xs)*d, len(Xs)*d))
+#
+    #  # TODO: try to get rid of nested for loops
+    #  cnt = 0
+    #  for i in Xs:
+        #  # Diagonal terms
+        #  Kzz[cnt*d:cnt*d+d, cnt*d:cnt*d+d] = CovX[i*d:i*d + d, i*d:i*d+d]
+        #  # Off-diagonal terms
+        #  cnt_j = cnt+1
+        #  for j in Xs[cnt_j:]:
+            #  Kzz[cnt*d:cnt*d+d, cnt_j*d:cnt_j*d+d] = CovX[i*d:i*d + d, j*d:j*d+d]
+            #  Kzz[cnt_j*d:cnt_j*d+d, cnt*d:cnt*d+d] = CovX[i*d:i*d + d, j*d:j*d+d].T
+            #  cnt_j += 1
+        #  cnt += 1
+#
+    #  return Kzz
 
 @Kuu.register(Multiscale, SquaredExponential)
 def Kuu_sqexp_multiscale(inducing_variable: Multiscale, kernel: SquaredExponential, *, jitter=0.0):

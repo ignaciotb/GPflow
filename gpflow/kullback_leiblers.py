@@ -35,22 +35,9 @@ def _(inducing_variable, kernel, q_mu, q_sqrt, whiten=False):
         return gauss_kl(q_mu, q_sqrt, K)
 
 @prior_kl_x.register(InducingVariables, Kernel, object, object)
-def _(inducing_variable, X_mean, X_cov, q_mu, q_sqrt, whiten=False):
-    # Nacho: Here we need to marginalize out all the X that 
-    # are not the inducing points, to compute Xs_mean and Xs_cov
-    
-    ## Covariance
-    Xs_cov = Kss(inducing_variable, X_cov)  # [P, M, M] or [M, M]
-    
-    ## Mean
-    d = np.size(inducing_variable.Z, 0) # Dim of latent variables P
-    Xs = np.array(inducing_variable, dtype=int) # Inducing points
-    Xs_mean = np.zeros((len(Xs)*d, 1)) # Allocate output
-    cnt = 0
-    for i in Xs:
-        Xs_mean[cnt*d:cnt*d+d] = X_mean[i*d:i*d+d]
-        cnt += 1
-
+def _(inducing_variable, Xs_mean, Xs_cov, q_mu, q_sqrt, whiten=False):
+    # Nacho: the only difference with gauss_kl() is that we don't assume the mean
+    # to be the null vector
     return gauss_kl_x(q_mu, q_sqrt, Xs_mean, Xs_cov)
 
 
